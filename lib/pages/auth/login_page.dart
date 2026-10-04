@@ -3,6 +3,7 @@ import '../../core/app_theme.dart';
 import '../main/main_shell.dart';
 import 'forgot_password_page.dart';
 import 'register_page.dart';
+import '../../features/admin/presentation/admin_login_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -42,6 +43,7 @@ class _LoginPageState extends State<LoginPage> {
         OutlinedButton.icon(onPressed: () {}, icon: const Icon(Icons.g_mobiledata_rounded), label: const Text('Continuer avec Google')),
         const SizedBox(height: 18),
         Center(child: TextButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const RegisterPage())), child: const Text('Pas encore de compte ? Créer un compte'))),
+        Center(child: TextButton.icon(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AdminLoginPage())), icon: const Icon(Icons.admin_panel_settings_outlined, size: 18), label: const Text('Espace administrateur'))),
       ]),
     );
   }
