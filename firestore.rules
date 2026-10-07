@@ -1,0 +1,37 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function isSelf(uid) { return signedIn() && request.auth.uid == uid; }
+    function isAdmin() {
+      return signedIn() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    match /users/{uid} {
+      // Own profile, or any profile for admins.
+      allow read: if isSelf(uid) || isAdmin();
+
+      // Self-registration: always a plain, active, unverified "user".
+      // A client can never create itself as owner / agent / admin.
+      allow create: if isSelf(uid)
+        && request.resource.data.keys().hasOnly(
+             ['id', 'name', 'email', 'phone', 'role', 'status', 'verified', 'createdAt'])
+        && request.resource.data.id == uid
+        && request.resource.data.role == 'user'
+        && request.resource.data.status == 'active'
+        && request.resource.data.verified == false
+        && request.resource.data.email == request.auth.token.email;
+
+      // Users may only edit harmless profile fields; role/status/verified are
+      // admin-only (or Cloud Functions, which bypass rules).
+      allow update: if (isSelf(uid)
+          && request.resource.data.diff(resource.data).affectedKeys()
+               .hasOnly(['name', 'phone', 'photoUrl', 'preferredCity']))
+        || isAdmin();
+
+      allow delete: if false;
+    }
+  }
+}
