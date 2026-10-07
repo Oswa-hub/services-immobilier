@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:immofind/core/errors/auth_failure.dart';
-import 'package:immofind/features/auth/domain/entities/auth_user.dart';
-import 'package:immofind/features/auth/domain/repositories/auth_repository.dart';
+import '../lib/core/errors/auth_failure.dart';
+import '../lib/features/auth/domain/entities/auth_user.dart';
+import '../lib/features/auth/domain/repositories/auth_repository.dart';
 
 class FakeAuthRepository implements AuthRepository {
   FakeAuthRepository({this.failLoginWith});

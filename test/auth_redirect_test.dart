@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:immofind/app/router_guard.dart';
-import 'package:immofind/app/routes.dart';
-import 'package:immofind/features/auth/domain/entities/auth_user.dart';
-import 'package:immofind/features/auth/providers/auth_state.dart';
+import '../lib/app/router_guard.dart';
+import '../lib/app/routes.dart';
+import '../lib/features/auth/domain/entities/auth_user.dart';
+import '../lib/features/auth/providers/auth_state.dart';
 
 AuthUser u({
   UserRole role = UserRole.user,

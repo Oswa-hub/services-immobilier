@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:immofind/core/utils/validators.dart';
+import 'package:team_app/core/utils/validators.dart';
 
 void main() {
   group('email', () {

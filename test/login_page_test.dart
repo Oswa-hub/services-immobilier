@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:immofind/core/theme/app_theme.dart';
-import 'package:immofind/features/auth/presentation/pages/login_page.dart';
-import 'package:immofind/features/auth/providers/auth_provider.dart';
+import '../lib/core/theme/app_theme.dart';
+import '../lib/features/auth/presentation/pages/login_page.dart';
+import '../lib/features/auth/providers/auth_provider.dart';
 
 import 'fake_auth_repository.dart';
 
