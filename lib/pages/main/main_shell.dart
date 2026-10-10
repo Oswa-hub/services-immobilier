@@ -4,7 +4,7 @@ import 'home_page.dart';
 import 'search_page.dart';
 import 'map_page.dart';
 import 'favorites_page.dart';
-import 'profile_page.dart';
+import '../../features/profile/presentation/profile_page.dart';
 
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
@@ -13,7 +13,7 @@ class MainShell extends StatefulWidget {
 
 class _MainShellState extends State<MainShell> {
   int index = 0;
-  final pages = const [HomePage(), SearchPage(), MapPage(), FavoritesPage(), ProfilePage()];
+  final pages = const [HomePage(), SearchPage(), MapPage(), FavoritesPage(), UserProfilePage()];
 
   @override
   Widget build(BuildContext context) {
