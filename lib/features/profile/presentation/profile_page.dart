@@ -168,6 +168,51 @@ class _UserProfilePageState extends State<UserProfilePage> {
     );
   }
 
+  Widget _buildProfileAvatar(String photoUrl) {
+    if (photoUrl.isEmpty) {
+      return const CircleAvatar(
+        radius: 48,
+        backgroundColor: Color(0xFFE1EAFF),
+        child: Icon(
+          Icons.person,
+          color: blue,
+          size: 54,
+        ),
+      );
+    }
+
+    return ClipOval(
+      child: Image.network(
+        photoUrl,
+        width: 96,
+        height: 96,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return const CircleAvatar(
+            radius: 48,
+            backgroundColor: Color(0xFFE1EAFF),
+            child: Icon(
+              Icons.person,
+              color: blue,
+              size: 54,
+            ),
+          );
+        },
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+
+          return const SizedBox(
+            width: 96,
+            height: 96,
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final authUser = FirebaseAuth.instance.currentUser;
@@ -233,6 +278,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
           final governorate =
               (data['preferredCity'] ?? '').toString();
 
+          final photoUrl =
+              (data['photoUrl'] ?? '').toString();
+
           final role =
               (data['role'] ?? 'user').toString();
 
@@ -246,14 +294,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
               child: ListView(
                 padding: const EdgeInsets.all(20),
                 children: [
-                  const CircleAvatar(
-                    radius: 48,
-                    backgroundColor: Color(0xFFE1EAFF),
-                    child: Icon(
-                      Icons.person,
-                      color: blue,
-                      size: 54,
-                    ),
+                  // Profile photo from Cloudinary / Firestore.
+                  Center(
+                    child: _buildProfileAvatar(photoUrl),
                   ),
 
                   const SizedBox(height: 14),
