@@ -14,6 +14,7 @@ import '../features/auth/providers/auth_provider.dart';
 import 'placeholder_pages.dart';
 import 'router_guard.dart';
 import 'routes.dart';
+import '../features/profile/presentation/profile_page.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   // Re-run the redirect whenever the auth state changes.
@@ -39,7 +40,16 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: Routes.verifyEmail, builder: (_, __) => const VerifyEmailPage()),
       GoRoute(path: Routes.accountStatus, builder: (_, __) => const AccountStatusPage()),
       // Placeholders until the next modules exist.
-      GoRoute(path: Routes.home, builder: (_, __) => const HomePlaceholderPage()),
+      
+GoRoute(
+  path: Routes.home,
+  builder: (_, __) => const UserProfilePage(),
+),
+
+GoRoute(
+  path: '/profile',
+  builder: (_, __) => const UserProfilePage(),
+),
       GoRoute(path: Routes.adminDashboard, builder: (_, __) => const AdminPlaceholderPage()),
     ],
   );
