@@ -1,56 +1,44 @@
+import '../../../properties/domain/entities/property.dart';
 import '../../domain/entities/search_enums.dart';
 
-extension TransactionTypeLabel on TransactionType {
+/// All user-facing search strings in one place (easy to localise to French later).
+class SearchStrings {
+  SearchStrings._();
+
+  static const emptyTitle = 'No properties match your search';
+  static const emptyMessage = 'Try changing the filters or widening the search area.';
+  static const emptyFeedTitle = 'No listings yet';
+  static const emptyFeedMessage = 'New properties will appear here soon.';
+  static const errorTitle = "The search couldn't be loaded";
+  static const errorFallback = 'Check your connection and try again.';
+}
+
+extension ListingTabLabel on ListingTab {
   String get label => switch (this) {
-        TransactionType.buy => 'Acheter',
-        TransactionType.rent => 'Louer',
-        TransactionType.newBuild => 'Neuf',
+        ListingTab.all => 'All',
+        ListingTab.buy => 'Buy',
+        ListingTab.rent => 'Rent',
+        ListingTab.newBuild => 'New',
       };
 }
 
 extension PropertyTypeLabel on PropertyType {
   String get label => switch (this) {
-        PropertyType.apartment => 'Appartement',
+        PropertyType.apartment => 'Apartment',
         PropertyType.villa => 'Villa',
-        PropertyType.house => 'Maison',
+        PropertyType.house => 'House',
         PropertyType.duplex => 'Duplex',
         PropertyType.triplex => 'Triplex',
-        PropertyType.land => 'Terrain',
-        PropertyType.office => 'Bureau',
-        PropertyType.commercial => 'Commerce',
-        PropertyType.industrial => 'Industriel',
+        PropertyType.land => 'Land',
+        PropertyType.office => 'Office',
+        PropertyType.commercial => 'Commercial',
+        PropertyType.industrial => 'Industrial',
+        PropertyType.other => 'Other',
       };
 }
 
-extension AmenityLabel on Amenity {
-  String get label => switch (this) {
-        Amenity.parking => 'Parking',
-        Amenity.pool => 'Piscine',
-        Amenity.elevator => 'Ascenseur',
-        Amenity.garden => 'Jardin',
-        Amenity.seaView => 'Vue mer',
-        Amenity.centralHeating => 'Chauffage central',
-        Amenity.airConditioning => 'Climatisation',
-        Amenity.security => 'Sécurité',
-        Amenity.terrace => 'Terrasse',
-        Amenity.balcony => 'Balcon',
-      };
-}
-
-extension SortOptionLabel on SortOption {
-  String get label => switch (this) {
-        SortOption.recommended => 'Recommandés',
-        SortOption.newest => 'Plus récents',
-        SortOption.lowestPrice => 'Prix croissant',
-        SortOption.highestPrice => 'Prix décroissant',
-        SortOption.largestSurface => 'Plus grande surface',
-        SortOption.closest => 'Plus proches',
-      };
-}
-
-const tunisianGovernorates = <String>[
-  'Ariana', 'Béja', 'Ben Arous', 'Bizerte', 'Gabès', 'Gafsa', 'Jendouba',
-  'Kairouan', 'Kasserine', 'Kébili', 'Kef', 'Mahdia', 'Manouba', 'Médenine',
-  'Monastir', 'Nabeul', 'Sfax', 'Sidi Bouzid', 'Siliana', 'Sousse',
-  'Tataouine', 'Tozeur', 'Tunis', 'Zaghouan',
+/// Types offered in the filter panel (everything except the catch-all).
+final searchablePropertyTypes = [
+  for (final t in PropertyType.values)
+    if (t != PropertyType.other) t,
 ];

@@ -9,12 +9,10 @@ service cloud.firestore {
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
 
+    // ---- Module 01: users ---------------------------------------------------
     match /users/{uid} {
-      // Own profile, or any profile for admins.
       allow read: if isSelf(uid) || isAdmin();
 
-      // Self-registration: always a plain, active, unverified "user".
-      // A client can never create itself as owner / agent / admin.
       allow create: if isSelf(uid)
         && request.resource.data.keys().hasOnly(
              ['id', 'name', 'email', 'phone', 'role', 'status', 'verified', 'createdAt'])
@@ -24,14 +22,27 @@ service cloud.firestore {
         && request.resource.data.verified == false
         && request.resource.data.email == request.auth.token.email;
 
-      // Users may only edit harmless profile fields; role/status/verified are
-      // admin-only (or Cloud Functions, which bypass rules).
       allow update: if (isSelf(uid)
           && request.resource.data.diff(resource.data).affectedKeys()
                .hasOnly(['name', 'phone', 'photoUrl', 'preferredCity']))
         || isAdmin();
 
       allow delete: if false;
+    }
+
+    // ---- Module 03: public discovery of properties ---------------------------
+    // Anyone may read PUBLISHED listings (every query must include status == 'published').
+    // Owners read their own drafts; admins read everything.
+    // Never store private contact data (phone/email) inside property documents.
+    match /properties/{propertyId} {
+      allow read: if resource.data.status == 'published'
+        || (signedIn() && resource.data.ownerId == request.auth.uid)
+        || isAdmin();
+
+      // Temporary: admin-only writes (needed by the debug seeder). Module 08 will
+      // let owners/agents create `pending_review` listings; publishing stays
+      // admin/backend-only so a client can never self-publish.
+      allow create, update, delete: if isAdmin();
     }
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../core/app_theme.dart';
+import '../../../core/theme/legacy_colors.dart';
 import '../data/models.dart';
 
 String fmtDate(DateTime d) =>

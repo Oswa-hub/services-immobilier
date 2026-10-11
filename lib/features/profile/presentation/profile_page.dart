@@ -1,22 +1,25 @@
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/routes.dart';
+import '../../auth/providers/auth_provider.dart';
 import '../data/profile_repository.dart';
 import 'edit_profile_page.dart';
 import 'security_page.dart';
 import 'notifications_page.dart';
+import 'profile_avatar.dart';
 
-class UserProfilePage extends StatefulWidget {
+class UserProfilePage extends ConsumerStatefulWidget {
   const UserProfilePage({super.key});
 
   @override
-  State<UserProfilePage> createState() => _UserProfilePageState();
+  ConsumerState<UserProfilePage> createState() => _UserProfilePageState();
 }
 
-class _UserProfilePageState extends State<UserProfilePage> {
+class _UserProfilePageState extends ConsumerState<UserProfilePage> {
   final ProfileRepository _repository = ProfileRepository();
 
   static const Color navy = Color(0xFF10244A);
@@ -26,7 +29,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
   bool _loggingOut = false;
 
   Future<void> _openEditProfile() async {
-    await Navigator.of(context).push(
+    await Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(
         builder: (_) => const EditProfilePage(),
       ),
@@ -36,7 +39,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
   }
 
   Future<void> _openSecurity() async {
-    await Navigator.of(context).push(
+    await Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(
         builder: (_) => const SecurityPage(),
       ),
@@ -44,7 +47,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
   }
 
   Future<void> _openNotifications() async {
-    await Navigator.of(context).push(
+    await Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(
         builder: (_) => const NotificationsPage(),
       ),
@@ -81,11 +84,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
     setState(() => _loggingOut = true);
 
     try {
-      await FirebaseAuth.instance.signOut();
-
-      if (!mounted) return;
-
-      context.go(Routes.welcome);
+      await ref.read(authControllerProvider.notifier).logout();
+      // The router guard redirects to Welcome once the session is gone.
     } on FirebaseAuthException catch (_) {
       if (!mounted) return;
 
@@ -111,6 +111,12 @@ class _UserProfilePageState extends State<UserProfilePage> {
         setState(() => _loggingOut = false);
       }
     }
+  }
+
+  void _comingSoon(String feature) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text('$feature will be available in an upcoming update.')));
   }
 
   Widget _sectionTitle(String title) {
@@ -246,14 +252,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
               child: ListView(
                 padding: const EdgeInsets.all(20),
                 children: [
-                  const CircleAvatar(
-                    radius: 48,
-                    backgroundColor: Color(0xFFE1EAFF),
-                    child: Icon(
-                      Icons.person,
-                      color: blue,
-                      size: 54,
-                    ),
+                  ProfileAvatar(
+                    photoUrl: (data['photoUrl'] ?? '').toString(),
+                    repository: _repository,
                   ),
 
                   const SizedBox(height: 14),
@@ -361,21 +362,25 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   _profileItem(
                     icon: Icons.favorite_outline,
                     title: 'Favorites',
+                    onTap: () => context.go(Routes.favorites),
                   ),
 
                   _profileItem(
                     icon: Icons.search,
                     title: 'Searches',
+                    onTap: () => context.go(Routes.search),
                   ),
 
                   _profileItem(
                     icon: Icons.message_outlined,
                     title: 'Messages',
+                    onTap: () => _comingSoon('Messages'),
                   ),
 
                   _profileItem(
                     icon: Icons.flag_outlined,
                     title: 'Reports',
+                    onTap: () => _comingSoon('Reports'),
                   ),
                 ],
               ),
