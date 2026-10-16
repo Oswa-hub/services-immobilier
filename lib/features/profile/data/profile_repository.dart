@@ -61,4 +61,10 @@ class ProfileRepository {
       'preferredCity': preferredCity.trim(),
     });
   }
+
+  // Save the Cloudinary image URL (photoUrl is allowed by the Firestore rules).
+  Future<void> updatePhotoUrl(String url) async {
+    await _userDocument().update({'photoUrl': url});
+    await currentUser?.updatePhotoURL(url);
+  }
 }
